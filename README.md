@@ -1,0 +1,2 @@
+# SpringCloud-architecture
+项目基于springCloud微服务架构搭建的一个基础框架
