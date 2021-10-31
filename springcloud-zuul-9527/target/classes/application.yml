@@ -1,0 +1,21 @@
+server:
+  port: 9527
+spring:
+  application:
+    name: springcloud-zuul-9527
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  instance:
+    instance-id: zuul9527
+
+zuul:
+  prefix: /yjx
+  ignoredServices: '*'
+  routes:
+    user:
+      path: /mypath/**
+      serviceId: SPRINGCLOUD-PROVIDER-DEPT
+      sensitiveHeaders:
