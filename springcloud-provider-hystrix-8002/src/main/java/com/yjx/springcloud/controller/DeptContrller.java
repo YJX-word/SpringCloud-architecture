@@ -1,5 +1,6 @@
 package com.yjx.springcloud.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.yjx.springcloud.pojo.Dept;
 import com.yjx.springcloud.service.DeptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,14 +33,21 @@ public class DeptContrller {
     }
 
     @GetMapping("/dept/get/{id}")
-    public Dept queryById(@PathVariable("id") Long id) throws Exception{
-        Dept dept = deptService.queryById(id); //mybatis如果没有结果会出异常，但是不会阻碍程序的运行
+    @HystrixCommand(fallbackMethod = "hystrixQueryById")
+    public Dept queryById(@PathVariable("id") Long id){
+        Dept dept = deptService.queryById(id);
         if(dept == null){
-            throw new RuntimeException("返回结果为null");
+            throw new RuntimeException("运行失败了，没有返回结果");
         }
-        System.out.println("运行到这里来了");
         return dept;
     }
+
+    public Dept hystrixQueryById(@PathVariable("id") Long id){
+        return new Dept().setDeptno(id).setDname("服务失败").setDb_source("没有数据库");
+    }
+
+
+
 
     @GetMapping("/dept/list")
     public List<Dept> queryALl(){
